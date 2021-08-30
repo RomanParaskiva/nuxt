@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="content__wrapper">
     <Auth v-if="!handleAuth" />
     <Contacts v-else />
   </div>
@@ -24,3 +24,9 @@ export default {
   },
 }
 </script>
+
+<style>
+.content__wrapper{
+  height: calc(100vh - 50px);
+}
+</style>

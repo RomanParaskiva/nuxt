@@ -18,12 +18,17 @@ export default {
       { name: 'format-detection', content: 'telephone=no' }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      { rel: 'stylesheet', href: 'https://fonts.googleapis.com/icon?family=Material+Icons' },
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossorigin: true },
+      { href: "https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;1,100&display=swap", rel: "stylesheet" }
     ]
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
+    '@/assets/css/main.css',
   ],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
@@ -48,14 +53,14 @@ export default {
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     browserBaseURL: 'http://obscur.space/mkomov-test',
-    headers : {
+    headers: {
       'Content-Type': 'application/json'
     },
-    
+
     // proxy: true
   },
   proxy: {
-    '/api/' :  { target:'http://obscur.space/mkomov-test', pathRewrite: {'^/api/': ''} }
+    '/api/': { target: 'http://obscur.space/mkomov-test', pathRewrite: { '^/api/': '' } }
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build

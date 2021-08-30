@@ -1,8 +1,5 @@
 <template>
-  <div>
-    <h1>contacts</h1>
     <ContactList />
-  </div>
 </template>
 
 <script>
@@ -19,4 +16,6 @@ export default {
 }
 </script>
 
-<style></style>
+<style>
+  
+</style>
