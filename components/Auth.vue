@@ -1,5 +1,6 @@
 <template>
-  <form @submit.prevent="userLogin">
+  <div class="form__wrapper">
+    <form @submit.prevent="userLogin">
     <h2>Добро пожаловать</h2>
     <span>в</span>
     <h3>Yallow Page</h3>
@@ -15,6 +16,7 @@
 
     <button type="submit">Войти</button>
   </form>
+  </div>
 </template>
 
 <script>
@@ -49,4 +51,47 @@ export default {
 }
 </script>
 
-<style></style>
+<style>
+  .form__wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    min-height: calc(100vh - 50px);
+  }
+
+  form {
+    padding: 2rem;
+    background-color: #faf9ff;
+    border-radius: 10px;
+    text-align: center;
+  }
+
+  form h3 {
+    margin-bottom: 1rem;
+  }
+
+  .input-wrapper{
+    display: flex;
+    flex-direction: column;
+  }
+
+  .input-wrapper label {
+    font-size: 10px;
+    text-transform: uppercase;
+    font-weight: 100;
+    color: #6b59cc;
+  }
+
+  .input-wrapper input {
+    padding: 10px 15px;
+    background-color: transparent;
+    border: 1px solid #6b59cc;
+    border-radius: 8px;
+  }
+
+  .input-wrapper input:{
+
+  }
+</style>
