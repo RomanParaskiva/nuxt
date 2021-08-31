@@ -20,15 +20,61 @@
     </div>
     <div class="role-switcher">
       <div class="swither__wrapper">
-        <span>{{ sort }}</span>
-        <div class="div">
-          <span class="material-icons"> expand_more </span>
-          <span class="material-icons"> expand_less </span>
+        <span>{{ sortBy === 'name' ? 'Имя' : 'Роль' }}</span>
+        <div class="sort-dir">
+          <span
+            :class="sortDir === 'asc' ? 'active' : ''"
+            class="material-icons"
+          >
+            expand_less
+          </span>
+          <span
+            :class="sortDir !== 'asc' ? 'active' : ''"
+            class="material-icons"
+          >
+            expand_more
+          </span>
+        </div>
+        <div class="switcher">
+          <div>
+            <span>Имя</span>
+            <div class="sort-dir">
+              <span
+                :class="sortDir === 'asc' ? 'active' : ''"
+                class="material-icons"
+              >
+                expand_less
+              </span>
+              <span
+                :class="sortDir !== 'asc' ? 'active' : ''"
+                class="material-icons"
+              >
+                expand_more
+              </span>
+            </div>
+          </div>
+          <div>
+            <span>Роль</span>
+            <div class="sort-dir">
+              <span
+                :class="sortDir === 'asc' ? 'active' : ''"
+                class="material-icons"
+              >
+                expand_less
+              </span>
+              <span
+                :class="sortDir !== 'asc' ? 'active' : ''"
+                class="material-icons"
+              >
+                expand_more
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
     <ul>
-      <li v-for="(item, index) in getList" :key="index">
+      <li v-for="(item, index) in getList" :id="item._id" :key="index">
         <div class="wrapper">
           <span class="material-icons"> account_circle </span>
           <div class="contact__info">
@@ -65,28 +111,28 @@ export default {
   data() {
     return {
       search: '',
-      sort: 'name',
-      sortDir: 'asc'
+      sortBy: 'name',
+      sortDir: 'asc',
     }
   },
   computed: {
     getList() {
       return this.$store.state.contacts.contactsList
     },
+    getQueryParams() {
+      return this.$store.state.search.queryParams
+    },
   },
   methods: {
     async handleSearch() {
-      console.log(this.search)
-      const res = await this.$axios.$get(`/contacts?search=${this.search}`, {
-       
-          query: {
-            sortBy: this.sort,
-            search: this.search,
-            sortDir: this.sortDir
-       
-        },
-      })
-      await this.$store.commit('contacts/setContactsList', res.items)
+      if (this.search.length > 3 || this.search === '') {
+        const res = await this.$axios.$get(`/contacts?search=${this.search}`, {
+          params: this.getQueryParams,
+        })
+
+        console.log(res)
+        await this.$store.commit('contacts/setContactsList', res.items)
+      }
     },
 
     clearSearch() {
@@ -119,6 +165,8 @@ export default {
 
 .search .input-wrapper {
   display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .search input {
@@ -185,5 +233,77 @@ li {
 
 .contact__action:not(:last-child) {
   margin-right: 6px;
+}
+
+.swither__wrapper {
+  width: 100%;
+  padding: 15px 32px;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.swither__wrapper > span,
+.swither__wrapper .switcher > div > span {
+  font-size: 14px;
+  line-height: 21px;
+  color: #8083a3;
+  margin-right: 20px;
+}
+
+.swither__wrapper .sort-dir {
+  display: flex;
+  flex-direction: column;
+}
+
+.swither__wrapper .sort-dir .material-icons {
+  font-size: 18px;
+  line-height: 8px;
+  color: #8083a3;
+  opacity: 0.4;
+}
+
+.swither__wrapper .sort-dir > span.active {
+  opacity: 1;
+}
+
+.swither__wrapper .switcher {
+  background: #ffffff;
+  border: 1px solid #eceef5;
+  border-radius: 10px;
+  padding: 8px 14px;
+}
+
+.swither__wrapper .switcher > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.swither__wrapper .switcher {
+  display: none;
+  width: 100px;
+  opacity: 0;
+  transition: .4s ease;
+}
+
+.swither__wrapper:hover .switcher{
+  display: block;
+  opacity: 1;
+  position: absolute;
+  bottom: -100%;
+  left: 24px;
+}
+
+.swither__wrapper .switcher>div>.sort-dir{
+  display: none;
+  opacity: 0;
+  transition: .4s ease;
+}
+
+.swither__wrapper .switcher>div:hover>.sort-dir{
+  display: flex;
+  opacity: 1;
 }
 </style>

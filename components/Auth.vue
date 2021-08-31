@@ -91,7 +91,14 @@ export default {
     border-radius: 8px;
   }
 
-  .input-wrapper input:{
-
+  button {
+    color: #fff;
+    background-color: #6b59cc;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 15px;
+    margin-top: 15px;
+    text-transform: uppercase;
+    font-size: 10px;
   }
 </style>
