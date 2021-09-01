@@ -20,16 +20,16 @@
     </div>
     <div class="role-switcher">
       <div class="swither__wrapper">
-        <span>{{ sortBy === 'name' ? 'Имя' : 'Роль' }}</span>
+        <span>{{ switcherSortBy }}</span>
         <div class="sort-dir">
           <span
-            :class="sortDir === 'asc' ? 'active' : ''"
+            :class="switcherSortDir === 'asc' ? 'active' : ''"
             class="material-icons"
           >
             expand_less
           </span>
           <span
-            :class="sortDir !== 'asc' ? 'active' : ''"
+            :class="switcherSortDir !== 'asc' ? 'active' : ''"
             class="material-icons"
           >
             expand_more
@@ -37,34 +37,43 @@
         </div>
         <div class="switcher">
           <div>
-            <span>Имя</span>
+            <span @click="handleQueryParams('sortBy', 'name')">Имя</span>
             <div class="sort-dir">
               <span
-                :class="sortDir === 'asc' ? 'active' : ''"
+                data-sortdir="asc"
+                :class="switcherSortDir === 'asc' ? 'active' : ''"
                 class="material-icons"
+                @click="handleQueryParams('sortDir', 'asc')"
               >
                 expand_less
               </span>
               <span
-                :class="sortDir !== 'asc' ? 'active' : ''"
+                data-sortdir="desc"
+                :class="switcherSortDir !== 'asc' ? 'active' : ''"
                 class="material-icons"
+                @click="handleQueryParams('sortDir', 'desc')"
               >
                 expand_more
               </span>
             </div>
           </div>
           <div>
-            <span>Роль</span>
+            <span @click="handleQueryParams('sortBy', 'role')">Роль</span>
             <div class="sort-dir">
               <span
-                :class="sortDir === 'asc' ? 'active' : ''"
+                data-sortdir="asc"
+                :class="switcherSortDir === 'asc' ? 'active' : ''"
                 class="material-icons"
+                @click="handleQueryParams('sortDir', 'asc')"
               >
                 expand_less
               </span>
               <span
-                :class="sortDir !== 'asc' ? 'active' : ''"
+                data-sortdir="desc"
+               
+                :class="switcherSortDir !== 'asc' ? 'active' : ''"
                 class="material-icons"
+                 @click="handleQueryParams('sortDir', 'desc')"
               >
                 expand_more
               </span>
@@ -110,9 +119,10 @@
 export default {
   data() {
     return {
+      queryParams: {},
       search: '',
-      sortBy: 'name',
-      sortDir: 'asc',
+      switcherSortBy: 'Имя',
+      switcherSortDir: 'asc'
     }
   },
   computed: {
@@ -123,6 +133,16 @@ export default {
       return this.$store.state.search.queryParams
     },
   },
+  watch: {
+    queryParams(newQ, oldQ) {
+      console.log(newQ)
+      this.setParams(newQ)
+     
+    }
+  },
+  mounted() {
+    Object.assign(this.queryParams, this.getQueryParams)
+  },
   methods: {
     async handleSearch() {
       if (this.search.length > 3 || this.search === '') {
@@ -130,8 +150,9 @@ export default {
           params: this.getQueryParams,
         })
 
-        console.log(res)
-        await this.$store.commit('contacts/setContactsList', res.items)
+         await this.$store.commit('contacts/setContactsList', res.items) 
+        this.switcherSortBy = this.getQueryParams.sortBy === 'name' ? 'Имя' : 'Роль'
+        this.switcherSortDir = this.getQueryParams.sortDir
       }
     },
 
@@ -139,6 +160,15 @@ export default {
       this.search = ''
       this.handleSearch()
     },
+
+    async handleQueryParams(key, value) {
+     this.queryParams[key] = value
+     await this.$store.commit('search/setSearch', this.queryParams)
+    },
+
+    setParams(obj){
+    
+    }
   },
 }
 </script>
@@ -261,10 +291,13 @@ li {
   line-height: 8px;
   color: #8083a3;
   opacity: 0.4;
+  position: relative;
+  z-index: 100;
 }
 
 .swither__wrapper .sort-dir > span.active {
   opacity: 1;
+  z-index: 1;
 }
 
 .swither__wrapper .switcher {
@@ -285,10 +318,10 @@ li {
   display: none;
   width: 100px;
   opacity: 0;
-  transition: .4s ease;
+  transition: 0.4s ease;
 }
 
-.swither__wrapper:hover .switcher{
+.swither__wrapper:hover .switcher {
   display: block;
   opacity: 1;
   position: absolute;
@@ -296,13 +329,13 @@ li {
   left: 24px;
 }
 
-.swither__wrapper .switcher>div>.sort-dir{
+.swither__wrapper .switcher > div > .sort-dir {
   display: none;
   opacity: 0;
-  transition: .4s ease;
+  transition: 0.4s ease;
 }
 
-.swither__wrapper .switcher>div:hover>.sort-dir{
+.swither__wrapper .switcher > div:hover > .sort-dir {
   display: flex;
   opacity: 1;
 }

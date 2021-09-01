@@ -10,7 +10,7 @@ export const state = () => ({
 export const mutations = {
   setSearch(state, obj) {
     for (const [key, value] in obj){
-      state[key] = value
+      state.queryParams[key] = value
     }
   }
 }
