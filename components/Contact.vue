@@ -27,6 +27,11 @@
             </div>
           </div>
         </div>
+        <div class="contact__bio">
+          <div class="left">
+            
+          </div>
+        </div>
       </div>
     </div>
   </div>
