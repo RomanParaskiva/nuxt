@@ -1,6 +1,6 @@
 <template>
   <div class="contact-list__wrapper">
-    <ContactsTop />
+    <ContactsTop @show="$emit('show', true);" />
     <div class="search">
       <label>Поиск контакта</label>
       <div class="input-wrapper">
@@ -58,7 +58,7 @@
             </div>
           </div>
           <div>
-            <span @click="handleQueryParams('sortBy', 'role')">Роль</span>
+            <span @click="handleQueryParams('sortBy', 'role')">Должность</span>
             <div class="sort-dir">
               <span
                 data-sortdir="asc"
@@ -70,10 +70,9 @@
               </span>
               <span
                 data-sortdir="desc"
-               
                 :class="switcherSortDir !== 'asc' ? 'active' : ''"
                 class="material-icons"
-                 @click="handleQueryParams('sortDir', 'desc')"
+                @click="handleQueryParams('sortDir', 'desc')"
               >
                 expand_more
               </span>
@@ -82,36 +81,38 @@
         </div>
       </div>
     </div>
-    <ul>
-      <li v-for="(item, index) in getList" :id="item._id" :key="index">
-        <div class="wrapper">
-          <span class="material-icons"> account_circle </span>
-          <div class="contact__info">
-            <span class="name">{{ item.name }}</span>
-            <span class="role">{{ item.role }}</span>
-          </div>
-          <div class="contact__actions">
-            <div class="contact__action">
-              <a :href="'mailto:' + item.emails[0]">
-                <span class="material-icons"> question_answer </span>
-              </a>
+    <div class="list-wrapper">
+      <ul>
+        <li v-for="(item, index) in getList" :id="item._id" :key="index" @click="$emit('clickContact', item._id)">
+            <div class="wrapper">
+            <span class="material-icons"> account_circle </span>
+            <div class="contact__info">
+              <span class="name">{{ item.name }}</span>
+              <span class="role">{{ item.role }}</span>
             </div>
+            <div class="contact__actions">
+              <div class="contact__action">
+                <a :href="'mailto:' + item.emails[0]">
+                  <span class="material-icons"> question_answer </span>
+                </a>
+              </div>
 
-            <div class="contact__action">
-              <a :href="'tel:' + item.phones[0]">
-                <span class="material-icons"> call </span>
-              </a>
-            </div>
+              <div class="contact__action">
+                <a :href="'tel:' + item.phones[0]">
+                  <span class="material-icons"> call </span>
+                </a>
+              </div>
 
-            <div class="contact__action">
-              <a href="#">
-                <span class="material-icons"> more_horiz </span>
-              </a>
+              <div class="contact__action">
+                <a href="#">
+                  <span class="material-icons"> more_horiz </span>
+                </a>
+              </div>
             </div>
           </div>
-        </div>
-      </li>
-    </ul>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -119,40 +120,30 @@
 export default {
   data() {
     return {
-      queryParams: {},
+      queryParams: {
+        sortBy: 'name',
+        sortDir: 'asc',
+        page: 1,
+        perPage: 10,
+      },
       search: '',
       switcherSortBy: 'Имя',
-      switcherSortDir: 'asc'
+      switcherSortDir: 'asc',
     }
   },
   computed: {
     getList() {
       return this.$store.state.contacts.contactsList
     },
-    getQueryParams() {
-      return this.$store.state.search.queryParams
-    },
-  },
-  watch: {
-    queryParams(newQ, oldQ) {
-      console.log(newQ)
-      this.setParams(newQ)
-     
-    }
-  },
-  mounted() {
-    Object.assign(this.queryParams, this.getQueryParams)
   },
   methods: {
     async handleSearch() {
       if (this.search.length > 3 || this.search === '') {
         const res = await this.$axios.$get(`/contacts?search=${this.search}`, {
-          params: this.getQueryParams,
+          params: this.queryParams,
         })
 
-         await this.$store.commit('contacts/setContactsList', res.items) 
-        this.switcherSortBy = this.getQueryParams.sortBy === 'name' ? 'Имя' : 'Роль'
-        this.switcherSortDir = this.getQueryParams.sortDir
+        await this.$store.commit('contacts/setContactsList', res.items)
       }
     },
 
@@ -162,13 +153,18 @@ export default {
     },
 
     async handleQueryParams(key, value) {
-     this.queryParams[key] = value
-     await this.$store.commit('search/setSearch', this.queryParams)
-    },
+      if (key === 'sortBy') {
+        this.queryParams.sortBy = value
+        this.switcherSortBy = value === 'name' ? 'Имя' : 'Должность'
+      }
 
-    setParams(obj){
-    
-    }
+      if (key === 'sortDir') {
+        this.queryParams.sortDir = value
+        this.switcherSortDir = value
+      }
+
+      await this.handleSearch()
+    },
   },
 }
 </script>
@@ -177,15 +173,19 @@ export default {
 .contact-list__wrapper {
   width: 100%;
   height: 100%;
-  max-width: 550px;
+  max-width: 35%;
   background-color: #faf9ff;
   border-right: 1px solid #eceef5;
+  display: flex;
+  flex-direction: column;
 }
 
 .search {
   display: flex;
   flex-direction: column;
   padding: 23px 32px;
+  height: auto;
+  min-height: 1px;
 }
 
 .search label {
@@ -213,27 +213,30 @@ export default {
 .search input::placeholder {
   color: #1a1c1d;
 }
-
-ul {
+.list-wrapper {
+  height: 100%;
+  overflow-y: auto;
+}
+.list-wrapper ul {
   list-style: none;
   padding-left: 0;
 }
 
-li {
+.list-wrapper ul li {
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
 }
 
-.contact-list__wrapper li .wrapper {
+.list-wrapper li .wrapper {
   width: 100%;
   display: flex;
   align-items: center;
   padding: 14px 32px;
 }
 
-.contact-list__wrapper li .wrapper > span {
+.list-wrapper li .wrapper > span {
   font-size: 30px;
   margin-right: 18px;
 }
@@ -263,6 +266,11 @@ li {
 
 .contact__action:not(:last-child) {
   margin-right: 6px;
+}
+
+.role-switcher{
+  height: auto;
+    min-height: 1px;
 }
 
 .swither__wrapper {
@@ -312,11 +320,12 @@ li {
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
+  margin-bottom: 5px;
 }
 
 .swither__wrapper .switcher {
   display: none;
-  width: 100px;
+  width: 150px;
   opacity: 0;
   transition: 0.4s ease;
 }

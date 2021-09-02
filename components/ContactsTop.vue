@@ -2,14 +2,20 @@
   <div class="contacts-top">
     <span class="material-icons avatar"> account_circle </span>
     <h3>Контакты</h3>
-    <a href="#">
-      <span class="material-icons"> person_add_alt_1 </span>
+    <a href="#" @click.prevent="$emit('show', true);">
+      <span class="material-icons" > person_add_alt_1 </span>
     </a>
   </div>
 </template>
 
 <script>
-export default {}
+export default {
+  methods: {
+    show(){
+      this.$emit('show', true);
+    }
+  }
+}
 </script>
 
 <style>
@@ -18,7 +24,9 @@ export default {}
   align-items: center;
   width: 100%;
   padding: 23px 32px;
-  border-bottom: 1px solid #ECEEF5;
+  border-bottom: 1px solid #eceef5;
+  height: auto;
+  min-height: 1px;
 }
 
 .contacts-top .avatar {
@@ -39,10 +47,10 @@ export default {}
 }
 
 .contacts-top a {
- margin-left: auto;
+  margin-left: auto;
 }
 
-.contacts-top a span{
+.contacts-top a span {
   font-size: 18px;
 }
 </style>

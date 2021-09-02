@@ -27,6 +27,8 @@ export default {
   width: 100%;
   padding: 0 32px;
   border-bottom: 1px solid #eceef5;
+  height: 50px;
+  background-color: #FAF9FF;
 }
 
 header {
@@ -34,7 +36,6 @@ header {
   max-width: 1200px;
   margin: 0 auto;
   height: 50px;
-  background-color: #fff;
   display: flex;
   justify-content: flex-end;
   align-items: center;
