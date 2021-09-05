@@ -10,6 +10,7 @@ body {
   font-size: 14px;
   line-height: 21px;
   font-weight: 400;
+  color: #1A1C1D;
   width: 100vw;
   height: 100vh;
   overflow: hidden;
@@ -20,31 +21,10 @@ body {
   color: #8083a3;
 }
 
-a {
-  width: 40px;
-  height: 40px;
-  background-color: #fff;
-  border: 1px solid #eceef5;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  transition: 0.3s ease;
-}
-
-a .material-icons {
-  font-size: 18px;
-  color: #8083a3;
-  transition: 0.3s ease;
-}
-
-a:hover {
-  background-color: rgba(77, 76, 172, 0.1);
-}
-
-a:hover .material-icons {
-  color: #6b59cc;
+h3 {
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 32px;
 }
 
 main {

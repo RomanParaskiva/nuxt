@@ -1,6 +1,6 @@
 <template>
   <div class="contact-list__wrapper">
-    <ContactsTop @show="$emit('show', true);" />
+    <ContactsTop @show="$emit('show', true)" />
     <div class="search">
       <label>Поиск контакта</label>
       <div class="input-wrapper">
@@ -83,30 +83,32 @@
     </div>
     <div class="list-wrapper">
       <ul>
-        <li v-for="(item, index) in getList" :id="item._id" :key="index" @click="$emit('clickContact', item._id)">
-            <div class="wrapper">
+        <li
+          v-for="(contact, index) in getList"
+          :id="contact._id"
+          :key="index"
+          @click="$emit('clickContact', contact._id)"
+        >
+          <div class="wrapper">
             <span class="material-icons"> account_circle </span>
             <div class="contact__info">
-              <span class="name">{{ item.name }}</span>
-              <span class="role">{{ item.role }}</span>
+              <span class="name">{{ contact.name }}</span>
+              <span class="role">{{ contact.role }}</span>
             </div>
             <div class="contact__actions">
               <div class="contact__action">
-                <a :href="'mailto:' + item.emails[0]">
-                  <span class="material-icons"> question_answer </span>
-                </a>
+                <Button
+                  :href="'mailto:' + contact.emails[0]"
+                  :icon="'question_answer'"
+                />
               </div>
 
               <div class="contact__action">
-                <a :href="'tel:' + item.phones[0]">
-                  <span class="material-icons"> call </span>
-                </a>
+                <Button :href="'tel:' + contact.phones[0]" :icon="'call'" />
               </div>
 
               <div class="contact__action">
-                <a href="#">
-                  <span class="material-icons"> more_horiz </span>
-                </a>
+                <Button :icon="'more_horiz'" />
               </div>
             </div>
           </div>
@@ -268,9 +270,9 @@ export default {
   margin-right: 6px;
 }
 
-.role-switcher{
+.role-switcher {
   height: auto;
-    min-height: 1px;
+  min-height: 1px;
 }
 
 .swither__wrapper {
