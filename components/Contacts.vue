@@ -7,6 +7,9 @@
 </template>
 
 <script>
+import { collection, getDocs } from 'firebase/firestore'
+import {db} from '~/plugins/firebase'
+
 export default {
   data() {
     return {
@@ -20,12 +23,13 @@ export default {
   },
   methods: {
     async getContactsList() {
-      this.$axios.setToken(this.$store.state.user.token, 'Bearer')
-      const data = await this.$axios.$get('/contacts')
-
-      if (data) {
-        this.$store.commit('contacts/setContactsList', data.items)
-      }
+      const data = await getDocs(collection(db, 'contacts'))
+      data.forEach((doc) => {
+        console.log(doc)
+      })
+      // if (data) {
+      //   this.$store.commit('contacts/setContactsList', data.items)
+      // }
     },
    show() {
       this.isCreate = true
