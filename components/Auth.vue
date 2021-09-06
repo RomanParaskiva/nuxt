@@ -1,6 +1,6 @@
 <template>
   <div class="form__wrapper">
-    <form @submit.prevent="userLogin">
+    <form @submit.prevent="writeToFirestore">
     <h2>Добро пожаловать</h2>
     <span>в</span>
     <h3>Yallow Page</h3>
@@ -20,6 +20,8 @@
 </template>
 
 <script>
+import { doc, setDoc } from 'firebase/firestore'
+import { db } from "~/plugins/firebase.js"
 export default {
   data() {
       return {
@@ -30,23 +32,39 @@ export default {
   mounted() {
   },
   methods: {
-    async userLogin() {
-      
-      if (this.email && this.password){
-      const res = await this.$axios.$post('/sing-in', {
-          email: this.email,
-          password: this.password
-      })
+     userLogin() {
+      // const auth = require('firebase/auth')
+      console.log(this.$fire)
+      // if (this.email && this.password){
+      // const res = await auth.createUserWithEmailAndPassword( {
+      //     email: this.email,
+      //     password: this.password
+      // })
 
-      if(res.access_token){
-       await this.$store.commit('user/setAuth', res.access_token)
-       this.$axios.setToken( res.access_token, 'Bearer')
-       localStorage.setItem('user', JSON.stringify({token: res.access_token}))
-       this.$router.push('/')
-      }
+      // console.log(res)
+
+      // if(res.access_token){
+      //  await this.$store.commit('user/setAuth', res.access_token)
+      //  this.$axios.setToken( res.access_token, 'Bearer')
+      //  localStorage.setItem('user', JSON.stringify({token: res.access_token}))
+      //  this.$router.push('/')
+      // }
       
-    }
-    }
+    // }
+    },
+    async writeToFirestore() {
+      const ref = doc(db, "testCollection", "testDoc")
+      const document = {
+        text: "Firebase 9 rocks!",
+      };
+    try {
+        await setDoc(ref, document)
+        alert("Success!")
+    } catch (e) {
+        alert("Error!")
+        console.error(e)
+      }
+    },
   }
 }
 </script>

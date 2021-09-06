@@ -35,14 +35,16 @@
       </div>
       <div class="contact__bottom">
         <span>Email</span>
-        <div v-for="(email, index) in contact.emails" :key="index">
+        <div>
+          <span v-for="(email, index) in contact.emails" :key="index">
           {{ email }}
+        </span>
         </div>
       </div>
       <div class="contact__bottom">
         <span>Телефон</span>
-        <div v-for="(phone, index) in contact.phones" :key="index">
-          {{ phone }}
+        <div>
+          <span v-for="(phone, index) in contact.phones" :key="index">{{ phone }}</span>
         </div>
       </div>
     </div>
@@ -132,7 +134,7 @@ export default {
   margin: 20px 0;
 }
 
-.contact__bottom:first-child{
+.contact__bottom:first-child {
   margin-top: 40px;
 }
 
@@ -144,7 +146,9 @@ export default {
   width: 100px;
 }
 
-.contact__bottom> div {
+.contact__bottom > div {
   padding-left: 32px;
+  max-height: 300px;
+  overflow-y: scroll;
 }
 </style>
