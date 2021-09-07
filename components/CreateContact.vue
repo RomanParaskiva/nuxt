@@ -61,6 +61,8 @@
 </template>
 
 <script>
+import { collection, addDoc } from 'firebase/firestore'
+import { db } from '~/plugins/firebase'
 export default {
   data() {
     return {
@@ -80,21 +82,25 @@ export default {
         this.role.length > 0 &&
         this.phone.length > 0
       ) {
-        const res = await this.$axios.$post('/contacts', {
-          name: this.name,
-          role: this.role,
-          bio: this.bio,
-          phones: [this.phone],
-          emails: [this.email],
-        })
-        
-        if (res._id) {
-          this.name = ''
-          this.email = ''
-          this.role = ''
-          this.phone = ''
-          this.bio = ''
-          this.$emit('close')
+        try {
+          const res = await addDoc(collection(db, 'contacts'), {
+            name: this.name,
+            role: this.role,
+            bio: this.bio,
+            phones: [this.phone],
+            emails: [this.email],
+          })
+
+          if (res.id) {
+            this.name = ''
+            this.email = ''
+            this.role = ''
+            this.phone = ''
+            this.bio = ''
+            this.$emit('close')
+          }
+        } catch (e) {
+         
         }
       }
     },

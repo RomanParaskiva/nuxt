@@ -19,17 +19,23 @@ export default {
     }
   },
   async mounted() {
-    await this.getContactsList()
+    console.log(this.$store.state)
+    !this.$store.state.contacts.ccontactsList && await this.getContactsList()
+    console.log(this.$store.state)
   },
   methods: {
     async getContactsList() {
       const data = await getDocs(collection(db, 'contacts'))
-      data.forEach((doc) => {
-        console.log(doc)
+
+      const list = data.docs.map(doc => {
+      const temp = doc.data()
+        temp.id = doc.id
+        return temp
       })
-      // if (data) {
-      //   this.$store.commit('contacts/setContactsList', data.items)
-      // }
+
+      if (data) {
+        this.$store.commit('contacts/setContactsList', list)
+      }
     },
    show() {
       this.isCreate = true

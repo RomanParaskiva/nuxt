@@ -20,9 +20,8 @@
 </template>
 
 <script>
-import { doc, setDoc } from 'firebase/firestore'
 import { createUserWithEmailAndPassword } from 'firebase/auth'
-import { db, auth } from '~/plugins/firebase.js'
+import { auth } from '~/plugins/firebase.js'
 export default {
   data() {
     return {
@@ -52,20 +51,6 @@ export default {
 
       // }
     },
-    async writeToFirestore() {
-      const ref = doc(db, 'testCollection', 'testDoc')
-      const document = {
-        text: 'Firebase 9 rocks!',
-      }
-      try {
-        await setDoc(ref, document)
-        alert('Success!')
-      } catch (e) {
-        alert('Error!')
-        console.error(e)
-      }
-    },
-
     async userRegister() {
       try {
         const credits = await createUserWithEmailAndPassword(
@@ -74,12 +59,11 @@ export default {
           this.password
         )
 
+          
+
       if(credits.user.accessToken){
         this.$store.commit('user/setAuth', credits.user.accessToken)
         localStorage.setItem('user', JSON.stringify({token: credits.user.accessToken}))
-       this.$router.push('/')
-      } else {
-        console.log(credits)
       }
       } catch (e) {
         console.log(e)

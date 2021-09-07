@@ -85,9 +85,9 @@
       <ul>
         <li
           v-for="(contact, index) in getList"
-          :id="contact._id"
+          :id="contact.id"
           :key="index"
-          @click="$emit('clickContact', contact._id)"
+          @click="$emit('clickContact', contact.id)"
         >
           <div class="wrapper">
             <span class="material-icons"> account_circle </span>
@@ -131,22 +131,69 @@ export default {
       search: '',
       switcherSortBy: 'Имя',
       switcherSortDir: 'asc',
+      list: [],
     }
   },
   computed: {
     getList() {
-      return this.$store.state.contacts.contactsList
+      return this.list && this.$store.state.contacts.contactsList.slice()
     },
   },
+  mounted() {
+    this.list = this.$store.state.contacts.contactsList.slice()
+    console.log(this.list)
+  },
+  
   methods: {
-    async handleSearch() {
+    handleSearch() {
       if (this.search.length > 3 || this.search === '') {
-        const res = await this.$axios.$get(`/contacts?search=${this.search}`, {
-          params: this.queryParams,
+        this.list = this.list.filter((item) => {
+          return this.searchByNamePhone(item, this.search)
         })
 
-        await this.$store.commit('contacts/setContactsList', res.items)
+        if (this.queryParams.sortBy === 'name') {
+          this.list.sort((a, b) => this.sortByName(a, b))
+        }
+        if (this.queryParams.sortBy === 'role') {
+          this.list.sort((a, b) => this.sortByRole(a, b))
+        }
+        if (this.queryParams.sortDir !== 'asc') {
+          this.list.reverse()
+        }
       }
+    },
+
+    searchByNamePhone(item, str) {
+      let t = false
+      if (item.name.toLowerCase().includes(str)) {
+        t = true
+      }
+      item.phones.forEach((phone) => {
+        if (phone.includes(str)) {
+          t = true
+        }
+      })
+      item.emails.forEach((email) => {
+        if (email.toLowerCase().includes(str)) {
+          t = true
+        }
+      })
+
+      return t
+    },
+
+    sortByName(a, b) {
+      const nameA = a.name.toLowerCase()
+      const nameB = b.name.toLowerCase()
+      if (nameA === nameB) return 0
+      return nameA > nameB ? 1 : -1
+    },
+
+    sortByRole(a, b) {
+      const roleA = a.role.toLowerCase()
+      const roleB = b.role.toLowerCase()
+      if (roleA === roleB) return 0
+      return roleA > roleB ? 1 : -1
     },
 
     clearSearch() {

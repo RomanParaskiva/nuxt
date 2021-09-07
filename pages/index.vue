@@ -1,6 +1,6 @@
 <template>
   <div class="content__wrapper">
-    <Auth v-if="!handleAuth" />
+    <Auth v-if="!isAuth" />
     <Contacts v-else />
   </div>
 </template>
@@ -10,7 +10,7 @@ import Contacts from '../components/Contacts.vue'
 export default {
   components: { Contacts },
   computed: {
-    handleAuth() {
+    isAuth() {
       return this.$store.state.user.token
     },
   },

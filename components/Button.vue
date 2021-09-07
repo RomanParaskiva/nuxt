@@ -31,6 +31,8 @@ a {
   align-items: center;
   justify-content: center;
   text-decoration: none;
+  position: relative;
+  z-index: 50;
   transition: 0.3s ease;
 }
 

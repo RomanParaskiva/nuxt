@@ -61,18 +61,15 @@ export default {
   },
   watch: {
     async id() {
-      await this.getInfo()
+     this.contact = await this.getInfo()
     },
   },
   async mounted() {
-    await this.getInfo()
+    this.contact = await this.getInfo()
   },
   methods: {
     async getInfo() {
-      this.contact = await this.$axios.$get(
-        `/contacts/${this.$options.propsData.id}`
-      )
-      console.log(this.contact)
+      return await this.$store.state.contacts.contactsList.filter(contact => contact.id === this.id)[0]
     },
   },
 }
@@ -95,7 +92,7 @@ export default {
   width: 80%;
 }
 
-.contact__top {
+.contact__wrapper .contact__top {
   width: 100%;
   display: flex;
   padding-left: 100px;
@@ -111,11 +108,11 @@ export default {
   margin-top: 5px;
 }
 
-.contact__actions {
+.contact__wrapper .contact__actions {
   margin-top: 30px;
 }
 
-.contact__action a.bigBtn {
+.contact__wrapper .contact__action a.bigBtn {
   height: 42px;
 }
 
@@ -124,7 +121,7 @@ export default {
   height: 42px;
 }
 
-.contact__action .bigBtn .material-icons {
+.contact__wrapper .contact__action .bigBtn .material-icons {
   margin-right: 6px;
 }
 
