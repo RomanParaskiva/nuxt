@@ -7,8 +7,7 @@
 </template>
 
 <script>
-import { collection, getDocs } from 'firebase/firestore'
-import {db} from '~/plugins/firebase'
+
 
 export default {
   data() {
@@ -18,25 +17,7 @@ export default {
       id: null
     }
   },
-  async mounted() {
-    console.log(this.$store.state)
-    !this.$store.state.contacts.ccontactsList && await this.getContactsList()
-    console.log(this.$store.state)
-  },
   methods: {
-    async getContactsList() {
-      const data = await getDocs(collection(db, 'contacts'))
-
-      const list = data.docs.map(doc => {
-      const temp = doc.data()
-        temp.id = doc.id
-        return temp
-      })
-
-      if (data) {
-        this.$store.commit('contacts/setContactsList', list)
-      }
-    },
    show() {
       this.isCreate = true
       this.isContact = false
@@ -45,7 +26,6 @@ export default {
     close() {
       this.isCreate = false
       this.isContact = false
-      this.getContactsList()
     },
 
     showContact(id){

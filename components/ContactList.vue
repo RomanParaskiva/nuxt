@@ -84,7 +84,7 @@
     <div class="list-wrapper">
       <ul>
         <li
-          v-for="(contact, index) in getList"
+          v-for="(contact, index) in list"
           :id="contact.id"
           :key="index"
           @click="$emit('clickContact', contact.id)"
@@ -119,6 +119,8 @@
 </template>
 
 <script>
+import { collection, getDocs } from 'firebase/firestore'
+import { db } from '~/plugins/firebase'
 export default {
   data() {
     return {
@@ -134,22 +136,33 @@ export default {
       list: [],
     }
   },
-  computed: {
-    getList() {
-      return this.list && this.$store.state.contacts.contactsList.slice()
-    },
+  async fetch() {
+    this.list = await this.getContactsList()
   },
-  mounted() {
-    this.list = this.$store.state.contacts.contactsList.slice()
-    console.log(this.list)
-  },
-  
+
   methods: {
+    async getContactsList() {
+      const data = await getDocs(collection(db, 'contacts'))
+     
+      const list = await data.docs.map((doc) => {
+        const temp = doc.data()
+        temp.id = doc.id
+        return temp
+      })
+      await this.$store.commit('contacts/setContactsList', list)
+       
+      return list.slice()
+    },
     handleSearch() {
-      if (this.search.length > 3 || this.search === '') {
+      if (this.search.length > 3) {
         this.list = this.list.filter((item) => {
           return this.searchByNamePhone(item, this.search)
         })
+      }
+
+      if (this.search === ''){
+        this.list = this.$store.state.contacts.contactsList.slice()
+      }
 
         if (this.queryParams.sortBy === 'name') {
           this.list.sort((a, b) => this.sortByName(a, b))
@@ -160,7 +173,7 @@ export default {
         if (this.queryParams.sortDir !== 'asc') {
           this.list.reverse()
         }
-      }
+      
     },
 
     searchByNamePhone(item, str) {
