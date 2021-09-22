@@ -119,7 +119,7 @@
 </template>
 
 <script>
-import { collection, getDocs } from 'firebase/firestore'
+import { collection, getDocs, doc, onSnapshot  } from 'firebase/firestore'
 import { db } from '~/plugins/firebase'
 export default {
   data() {
@@ -138,9 +138,15 @@ export default {
   },
   async fetch() {
     this.list = await this.getContactsList()
+    this.unsub()
   },
-
   methods: {
+   async unsub() { 
+     const res = await onSnapshot(doc(db, 'contacts'), (doc) => {
+    console.log("Current data: ", doc.data())
+    console.log(res)
+    })
+   },
     async getContactsList() {
       const data = await getDocs(collection(db, 'contacts'))
      

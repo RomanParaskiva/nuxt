@@ -1,6 +1,6 @@
 <template>
   <div class="form__wrapper">
-    <form @submit.prevent="userRegister">
+    <form @submit.prevent="userLogin">
       <h2>Добро пожаловать</h2>
       <span>в</span>
       <h3>Yallow Page</h3>
@@ -20,7 +20,10 @@
 </template>
 
 <script>
-import { createUserWithEmailAndPassword } from 'firebase/auth'
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from 'firebase/auth'
 import { auth } from '~/plugins/firebase.js'
 export default {
   data() {
@@ -31,25 +34,26 @@ export default {
   },
   mounted() {},
   methods: {
-    userLogin() {
-      // const auth = require('firebase/auth')
-      console.log(this.$fire)
-      // if (this.email && this.password){
-      // const res = await auth.createUserWithEmailAndPassword( {
-      //     email: this.email,
-      //     password: this.password
-      // })
+    async userLogin() {
+      if (this.email && this.password) {
+        const res = await signInWithEmailAndPassword(
+          auth,
+          this.email,
+          this.password
+        )
 
-      // console.log(res)
+        console.log(res)
 
-      // if(res.access_token){
-      //  await this.$store.commit('user/setAuth', res.access_token)
-      //  this.$axios.setToken( res.access_token, 'Bearer')
-      //  localStorage.setItem('user', JSON.stringify({token: res.access_token}))
-      //  this.$router.push('/')
-      // }
-
-      // }
+        if (res.user.accessToken) {
+          await this.$store.commit('user/setAuth', res.user.accessToken)
+          this.$axios.setToken(res.user.accessToken, 'Bearer')
+          localStorage.setItem(
+            'user',
+            JSON.stringify({ token: res.user.accessToken })
+          )
+          this.$router.push('/')
+        }
+      }
     },
     async userRegister() {
       try {
@@ -59,12 +63,13 @@ export default {
           this.password
         )
 
-          
-
-      if(credits.user.accessToken){
-        this.$store.commit('user/setAuth', credits.user.accessToken)
-        localStorage.setItem('user', JSON.stringify({token: credits.user.accessToken}))
-      }
+        if (credits.user.accessToken) {
+          this.$store.commit('user/setAuth', credits.user.accessToken)
+          localStorage.setItem(
+            'user',
+            JSON.stringify({ token: credits.user.accessToken })
+          )
+        }
       } catch (e) {
         console.log(e)
       }
